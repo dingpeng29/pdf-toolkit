@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="免费在线PDF工具：PDF合并、PDF拆分，纯浏览器本地处理，无需上传文件，保护隐私安全。支持拖拽排序，快速处理。">
+<meta name="keywords" content="PDF合并,PDF拆分,PDF工具,在线PDF,merge PDF,split PDF,免费PDF工具">
+<meta property="og:title" content="PDF在线工具箱 - PDF合并 拆分 | ToolBox Pro">
+<meta property="og:description" content="PDF合并和拆分工具，纯浏览器本地处理，文件不会上传到服务器。">
+<meta property="og:url" content="https://dingpeng29.github.io/pdf-toolkit/">
+<title>PDF在线工具箱 - PDF合并 拆分 压缩 | ToolBox Pro</title>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"PDF工具箱","url":"https://dingpeng29.github.io/pdf-toolkit/","description":"在线PDF合并和拆分工具，浏览器本地处理","applicationCategory":"Utility","operatingSystem":"All","inLanguage":"zh-CN"}
+</script>
+<style>
+:root{--bg:#f8fafc;--card:#fff;--text:#1e293b;--text2:#64748b;--border:#e2e8f0;--primary:#3b82f6;--primary-h:#2563eb;--green:#10b981;--red:#ef4444;--amber:#f59e0b;--shadow:0 1px 3px rgba(0,0,0,0.06);--radius:12px;--radius-sm:8px;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;}
+.header{background:var(--card);border-bottom:1px solid var(--border);padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;}
+.header .logo{font-size:20px;font-weight:700;text-decoration:none;color:var(--text);}
+.header .back{color:var(--text2);text-decoration:none;font-size:14px;}.header .back:hover{color:var(--primary);}
+.container{max-width:900px;margin:0 auto;padding:24px 20px;}
+.hero{text-align:center;padding:32px 20px 24px;}
+.hero h1{font-size:28px;font-weight:800;color:var(--text);}
+.hero p{color:var(--text2);font-size:14px;margin-top:8px;}
+.card{background:var(--card);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:20px;}
+
+.tab-row{display:flex;gap:4px;margin-bottom:20px;background:var(--bg);border-radius:var(--radius-sm);padding:4px;}
+.tab-btn{padding:10px 20px;border-radius:6px;border:none;background:none;cursor:pointer;font-size:14px;color:var(--text2);transition:all .15s;flex:1;}
+.tab-btn.active{background:var(--card);color:var(--text);box-shadow:var(--shadow);font-weight:600;}
+.tab-panel{display:none;}.tab-panel.active{display:block;}
+
+.drop-zone{border:2px dashed var(--border);border-radius:var(--radius-sm);padding:40px 20px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg);}
+.drop-zone:hover,.drop-zone.dragover{border-color:var(--primary);background:#eff6ff;}
+.drop-zone .icon{font-size:48px;margin-bottom:8px;}
+.drop-zone .hint{font-size:14px;color:var(--text2);}
+.drop-zone .hint strong{color:var(--primary);}
+.drop-zone input{display:none;}
+
+.file-list{list-style:none;margin-top:12px;}
+.file-list li{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--bg);border-radius:var(--radius-sm);margin-bottom:6px;border:1px solid var(--border);}
+.file-list li .name{font-size:14px;font-weight:500;}
+.file-list li .size{font-size:12px;color:var(--text2);}
+.file-list li .actions{display:flex;gap:8px;align-items:center;}
+.file-list li .actions button{background:none;border:none;cursor:pointer;font-size:18px;color:var(--text2);padding:4px 8px;border-radius:4px;}
+.file-list li .actions button:hover{color:var(--red);}
+.file-list li.dragging{opacity:0.5;}
+
+.split-options{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:12px;}
+.split-options label{font-size:13px;color:var(--text2);}
+.split-options input[type="text"]{padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;width:200px;}
+.split-options input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(59,130,246,0.1);}
+
+.btn{padding:10px 20px;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all .2s;}
+.btn-primary{background:var(--primary);color:#fff;}.btn-primary:hover{background:var(--primary-h);}
+.btn-green{background:var(--green);color:#fff;}.btn-green:hover{background:#059669;}
+.btn-secondary{background:var(--bg);color:var(--text);border:1px solid var(--border);}.btn-secondary:hover{background:var(--border);}
+.btn:disabled{opacity:0.5;cursor:not-allowed;}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;justify-content:center;}
+
+.progress-bar{width:100%;height:6px;background:var(--border);border-radius:3px;margin-top:8px;overflow:hidden;display:none;}
+.progress-bar .fill{height:100%;background:var(--primary);border-radius:3px;transition:width .3s;}
+
+.result-box{text-align:center;padding:20px;margin-top:12px;display:none;}
+.result-box.success{border:2px solid var(--green);border-radius:var(--radius-sm);background:#f0fdf4;}
+
+.donate-box{background:linear-gradient(135deg,#fef3c7,#fde68a);border-radius:var(--radius);padding:20px 24px;text-align:center;border:1px solid #fcd34d;margin-bottom:16px;}
+.donate-box h3{color:#92400e;font-size:16px;margin-bottom:4px;}
+.donate-box p{color:#a16207;font-size:13px;margin-bottom:8px;}
+.donate-box .btn-donate{background:#f59e0b;color:#fff;padding:10px 24px;border-radius:var(--radius-sm);font-size:14px;font-weight:700;border:none;cursor:pointer;margin:0 4px;}
+.donate-box .btn-donate:hover{background:#d97706;}
+
+.footer{text-align:center;padding:32px 20px;color:var(--text2);font-size:12px;border-top:1px solid var(--border);margin-top:32px;}.footer a{color:var(--primary);text-decoration:none;}
+.powered{text-align:center;font-size:13px;color:var(--text2);margin-top:24px;}.powered a{color:var(--primary);text-decoration:none;font-weight:600;}
+
+@media(max-width:640px){.hero h1{font-size:22px;}.tab-btn{font-size:12px;padding:8px 12px;}}
+</style>
+</head>
+<body>
+<header class="header"><a href="/pdf-toolkit/" class="logo">📄 PDF Toolkit</a><a href="/toolbox-pro/" class="back">← ToolBox Pro</a></header>
+<div class="container">
+<div class="hero"><h1>PDF 在线工具箱</h1><p>PDF合并、拆分。所有处理在浏览器本地完成，文件不会上传到任何服务器，保护你的隐私安全。</p></div>
+
+<div class="donate-box">
+<h3>❤️ 支持这个工具</h3>
+<p>如果这个PDF工具帮到了你，欢迎赞赏支持我们持续开发更多实用功能</p>
+<div>
+<button class="btn-donate" onclick="document.getElementById('donateQr').style.display='block'">🎁 赞赏支持</button>
+<a href="https://github.com/dingpeng29/pdf-toolkit" target="_blank" style="color:#92400e;font-weight:700;text-decoration:none;margin-left:12px;">⭐ GitHub Star</a>
+</div>
+<div id="donateQr" style="display:none;margin-top:12px;padding:12px;background:#fff;border-radius:8px;">
+<p style="color:#92400e;font-size:13px;margin-bottom:8px;">扫描二维码赞赏（微信/支付宝）</p>
+<div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+<div style="text-align:center;"><div style="width:140px;height:140px;background:#f1f5f9;border-radius:8px;display:flex;align-items:center;justify-content:center;margin:0 auto;color:#94a3b8;font-size:12px;">微信收款码<br>（待配置）</div><span style="font-size:11px;color:#94a3b8;">微信</span></div>
+<div style="text-align:center;"><div style="width:140px;height:140px;background:#f1f5f9;border-radius:8px;display:flex;align-items:center;justify-content:center;margin:0 auto;color:#94a3b8;font-size:12px;">支付宝收款码<br>（待配置）</div><span style="font-size:11px;color:#94a3b8;">支付宝</span></div>
+</div>
+<p style="color:#94a3b8;font-size:11px;margin-top:8px;">请提供你的微信/支付宝收款码图片链接，我来配置</p>
+</div>
+</div>
+
+<div class="card">
+<div class="tab-row">
+<button class="tab-btn active" data-tab="merge">📑 PDF 合并</button>
+<button class="tab-btn" data-tab="split">✂️ PDF 拆分</button>
+</div>
+
+<!-- Merge Tab -->
+<div class="tab-panel active" id="panel-merge">
+<div class="drop-zone" id="mergeDrop">
+<div class="icon">📂</div>
+<div class="hint">拖拽PDF文件到此处，或 <strong>点击选择文件</strong></div>
+<input type="file" id="mergeInput" multiple accept=".pdf">
+</div>
+<ul class="file-list" id="mergeList"></ul>
+<div class="progress-bar" id="mergeProgress"><div class="fill" style="width:0%"></div></div>
+<div class="btn-row">
+<button class="btn btn-primary" id="mergeBtn" onclick="mergePDFs()" disabled>合并并下载</button>
+<button class="btn btn-secondary" onclick="clearMerge()">清空列表</button>
+</div>
+<div class="result-box" id="mergeResult"></div>
+</div>
+
+<!-- Split Tab -->
+<div class="tab-panel" id="panel-split">
+<div class="drop-zone" id="splitDrop">
+<div class="icon">📄</div>
+<div class="hint">拖拽一个PDF文件到此处，或 <strong>点击选择文件</strong></div>
+<input type="file" id="splitInput" accept=".pdf">
+</div>
+<div id="splitFileInfo" style="display:none;padding:12px;background:var(--bg);border-radius:var(--radius-sm);margin-top:8px;">
+<span id="splitFileName" style="font-weight:600;"></span>
+<span id="splitPageCount" style="color:var(--text2);margin-left:8px;"></span>
+</div>
+<div class="split-options">
+<label>提取页面：</label>
+<input type="text" id="splitPages" placeholder="例如: 1,3,5-8">
+<span style="font-size:12px;color:var(--text2);">支持逗号分隔，范围如 1-5</span>
+</div>
+<div class="progress-bar" id="splitProgress"><div class="fill" style="width:0%"></div></div>
+<div class="btn-row">
+<button class="btn btn-green" id="splitBtn" onclick="splitPDF()" disabled>提取并下载</button>
+<button class="btn btn-secondary" onclick="clearSplit()">清空</button>
+</div>
+<div class="result-box" id="splitResult"></div>
+</div>
+</div>
+
+<div class="powered">由 <a href="/toolbox-pro/">ToolBox Pro</a> 提供支持 · <a href="https://github.com/dingpeng29/pdf-toolkit" target="_blank">GitHub</a></div>
+</div>
+<footer class="footer"><p>PDF Toolkit — 所有处理在浏览器本地完成，文件不会上传 · <a href="https://github.com/dingpeng29/pdf-toolkit" target="_blank">GitHub</a> · <a href="/toolbox-pro/">更多免费工具 →</a></p></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script>
+// Tab navigation
+document.querySelectorAll('.tab-btn').forEach(function(b){
+b.addEventListener('click',function(){
+document.querySelectorAll('.tab-btn,.tab-panel').forEach(function(x){x.classList.remove('active');});
+b.classList.add('active');
+document.getElementById('panel-'+b.dataset.tab).classList.add('active');
+});
+});
+
+// --- Merge ---
+var mergeFiles = [];
+
+var mergeDrop = document.getElementById('mergeDrop');
+mergeDrop.addEventListener('click',function(){document.getElementById('mergeInput').click();});
+mergeDrop.addEventListener('dragover',function(e){e.preventDefault();mergeDrop.classList.add('dragover');});
+mergeDrop.addEventListener('dragleave',function(){mergeDrop.classList.remove('dragover');});
+mergeDrop.addEventListener('drop',function(e){e.preventDefault();mergeDrop.classList.remove('dragover');handleMergeFiles(e.dataTransfer.files);});
+document.getElementById('mergeInput').addEventListener('change',function(e){handleMergeFiles(e.target.files);});
+
+function handleMergeFiles(files){
+Array.from(files).filter(function(f){return f.type==='application/pdf'||f.name.endsWith('.pdf');}).forEach(function(f){
+mergeFiles.push(f);
+});
+renderMergeList();
+}
+
+function renderMergeList(){
+var list = document.getElementById('mergeList');
+var btn = document.getElementById('mergeBtn');
+if(mergeFiles.length===0){list.innerHTML='';btn.disabled=true;return;}
+btn.disabled=false;
+list.innerHTML=mergeFiles.map(function(f,i){
+var size=f.size<1024*1024?(f.size/1024).toFixed(1)+' KB':(f.size/(1024*1024)).toFixed(1)+' MB';
+return'<li draggable="true" data-index="'+i+'"><span class="name">📄 '+escHtml(f.name)+'</span><span class="size">'+size+'</span><div class="actions"><button title="上移" onclick="moveMerge('+i+',-1)">▲</button><button title="下移" onclick="moveMerge('+i+',1)">▼</button><button title="删除" onclick="removeMerge('+i+')">✕</button></div></li>';
+}).join('');
+// Drag and drop reorder
+list.querySelectorAll('li').forEach(function(li){
+li.addEventListener('dragstart',function(e){e.dataTransfer.setData('text/plain',li.dataset.index);li.classList.add('dragging');});
+li.addEventListener('dragend',function(){li.classList.remove('dragging');});
+li.addEventListener('dragover',function(e){e.preventDefault();});
+li.addEventListener('drop',function(e){e.preventDefault();var from=parseInt(e.dataTransfer.getData('text/plain'));var to=parseInt(li.dataset.index);if(from!==to){var item=mergeFiles.splice(from,1)[0];mergeFiles.splice(to,0,item);renderMergeList();}});
+});
+}
+
+function moveMerge(i,dir){var ni=i+dir;if(ni<0||ni>=mergeFiles.length)return;var tmp=mergeFiles[i];mergeFiles[i]=mergeFiles[ni];mergeFiles[ni]=tmp;renderMergeList();}
+function removeMerge(i){mergeFiles.splice(i,1);renderMergeList();}
+function clearMerge(){mergeFiles=[];renderMergeList();document.getElementById('mergeResult').style.display='none';}
+
+async function mergePDFs(){
+if(mergeFiles.length<2)return;
+var btn=document.getElementById('mergeBtn');var prog=document.getElementById('mergeProgress');
+btn.disabled=true;prog.style.display='block';prog.querySelector('.fill').style.width='10%';
+try{
+var merged=await PDFLib.PDFDocument.create();
+for(var i=0;i<mergeFiles.length;i++){
+var buf=await mergeFiles[i].arrayBuffer();
+var doc=await PDFLib.PDFDocument.load(buf);
+var pages=await merged.copyPages(doc,doc.getPageIndices());
+pages.forEach(function(p){merged.addPage(p);});
+prog.querySelector('.fill').style.width=(10+80*(i+1)/mergeFiles.length)+'%';
+}
+var bytes=await merged.save();
+prog.querySelector('.fill').style.width='100%';
+downloadBlob(bytes,'merged.pdf','application/pdf');
+showResult('mergeResult','✅ PDF合并完成！已下载 merged.pdf ('+(bytes.length/(1024*1024)).toFixed(2)+' MB)');
+}catch(e){
+showResult('mergeResult','❌ 合并失败: '+e.message,true);
+}
+btn.disabled=false;prog.style.display='none';
+}
+
+// --- Split ---
+var splitFile = null;
+
+var splitDrop = document.getElementById('splitDrop');
+splitDrop.addEventListener('click',function(){document.getElementById('splitInput').click();});
+splitDrop.addEventListener('dragover',function(e){e.preventDefault();splitDrop.classList.add('dragover');});
+splitDrop.addEventListener('dragleave',function(){splitDrop.classList.remove('dragover');});
+splitDrop.addEventListener('drop',function(e){e.preventDefault();splitDrop.classList.remove('dragover');handleSplitFile(e.dataTransfer.files[0]);});
+document.getElementById('splitInput').addEventListener('change',function(e){if(e.target.files[0])handleSplitFile(e.target.files[0]);});
+
+function handleSplitFile(file){
+if(!file||(file.type!=='application/pdf'&&!file.name.endsWith('.pdf')))return;
+splitFile=file;
+document.getElementById('splitFileName').textContent='📄 '+file.name;
+document.getElementById('splitFileInfo').style.display='block';
+document.getElementById('splitBtn').disabled=false;
+// Count pages
+file.arrayBuffer().then(function(buf){
+return PDFLib.PDFDocument.load(buf);
+}).then(function(doc){
+document.getElementById('splitPageCount').textContent='共 '+doc.getPageCount()+' 页';
+}).catch(function(){});
+}
+
+function clearSplit(){
+splitFile=null;
+document.getElementById('splitFileInfo').style.display='none';
+document.getElementById('splitInput').value='';
+document.getElementById('splitBtn').disabled=true;
+document.getElementById('splitResult').style.display='none';
+document.getElementById('splitPages').value='';
+}
+
+function parsePageRanges(input,total){
+var pages=new Set();
+var parts=input.split(',');
+parts.forEach(function(part){
+part=part.trim();
+if(part.includes('-')){
+var range=part.split('-');
+var start=parseInt(range[0]),end=parseInt(range[1]);
+if(!isNaN(start)&&!isNaN(end)){
+for(var i=Math.max(1,start);i<=Math.min(total,end);i++)pages.add(i-1);
+}
+}else{
+var n=parseInt(part);
+if(!isNaN(n)&&n>=1&&n<=total)pages.add(n-1);
+}
+});
+return Array.from(pages).sort(function(a,b){return a-b;});
+}
+
+async function splitPDF(){
+if(!splitFile)return;
+var pagesInput=document.getElementById('splitPages').value.trim();
+var btn=document.getElementById('splitBtn');var prog=document.getElementById('splitProgress');
+btn.disabled=true;prog.style.display='block';prog.querySelector('.fill').style.width='10%';
+try{
+var buf=await splitFile.arrayBuffer();
+var srcDoc=await PDFLib.PDFDocument.load(buf);
+var total=srcDoc.getPageCount();
+var pageIndices;
+if(pagesInput){
+pageIndices=parsePageRanges(pagesInput,total);
+if(pageIndices.length===0){showResult('splitResult','请输入有效的页码范围（如 1,3,5-8）',true);btn.disabled=false;prog.style.display='none';return;}
+}else{
+pageIndices=Array.from({length:total},function(_,i){return i;});
+}
+var newDoc=await PDFLib.PDFDocument.create();
+var pages=await newDoc.copyPages(srcDoc,pageIndices);
+pages.forEach(function(p){newDoc.addPage(p);});
+prog.querySelector('.fill').style.width='80%';
+var bytes=await newDoc.save();
+prog.querySelector('.fill').style.width='100%';
+var suffix=pagesInput?pageIndices.map(function(i){return i+1;}).join(','):'all';
+downloadBlob(bytes,'split_pages_'+suffix.replace(/,/g,'_')+'.pdf','application/pdf');
+showResult('splitResult','✅ PDF拆分完成！提取了 '+pageIndices.length+' 页');
+}catch(e){
+showResult('splitResult','❌ 拆分失败: '+e.message,true);
+}
+btn.disabled=false;prog.style.display='none';
+}
+
+// --- Helpers ---
+function downloadBlob(bytes,filename,mime){
+var blob=new Blob([bytes],{type:mime});
+var url=URL.createObjectURL(blob);
+var a=document.createElement('a');
+a.href=url;a.download=filename;document.body.appendChild(a);a.click();
+document.body.removeChild(a);URL.revokeObjectURL(url);
+}
+
+function showResult(id,msg,isError){
+var el=document.getElementById(id);
+el.innerHTML=msg;
+el.className='result-box '+(isError?'':'success');
+el.style.display='block';
+if(!isError)setTimeout(function(){el.style.display='none';},10000);
+}
+
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+</script>
+
+<script>
+(function(){
+var bp = document.createElement('script');
+var curProtocol = window.location.protocol.split(':')[0];
+if (curProtocol === 'https') { bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'; }
+else { bp.src = 'http://push.zhanzhang.baidu.com/push.js'; }
+var s = document.getElementsByTagName("script")[0];
+s.parentNode.insertBefore(bp, s);
+})();
+</script>
+</body>
+</html>
